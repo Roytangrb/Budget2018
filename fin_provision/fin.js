@@ -30,9 +30,17 @@ function fin() {
 		}));
 
 	
-	var bubble = d3.pack()
-			.size([width, height])
-			.padding(1.5);
+	var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("color", "white")
+    .style("padding", "8px")
+    .style("background-color", "rgba(0, 0, 0, 0.75)")
+    .style("border-radius", "6px")
+    .style("font", "12px sans-serif")
+    .html("tooltip");
 
 	d3.queue()
 		.defer(d3.csv, "finProvision.csv")
@@ -60,7 +68,19 @@ function fin() {
 			}) // need to change the color according to the category(0 expense highlight)
 			.on("click", function(d){
 				console.log(d);
-			})
+			});
+
+			//add tooltip
+			bubbles
+      .on("mouseover", function(d) {
+              tooltip.html(d["Programme Name"] + "</br>" + "Expense: " +
+               d["2016-17-Actual"] + " million HK$" +"</br>"+ "Group: " + d["Head"]);
+              tooltip.style("visibility", "visible");
+      })
+      .on("mousemove", function() {
+          return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+      })
+      .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
 
 		//add text label
