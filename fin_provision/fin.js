@@ -66,21 +66,30 @@ function fin() {
 				return hueScale(+d["2016-17-Actual"]);
 				//colorScale(d["Head"]);
 			}) // need to change the color according to the category(0 expense highlight)
+			
+			//filter out same group bubbles and add stroke
 			.on("click", function(d){
+				bubbles.attr("stroke-width", 0);
+				var grp = d["Head"];
+				bubbles.each(function(d){
+					if(d["Head"] === grp){
+						d3.select(this).attr("stroke", "black").attr("stroke-width", 3);
+					}
+				});
 				console.log(d);
 			});
 
 			//add tooltip
 			bubbles
-      .on("mouseover", function(d) {
-              tooltip.html(d["Programme Name"] + "</br>" + "Expense: " +
-               d["2016-17-Actual"] + " million HK$" +"</br>"+ "Group: " + d["Head"]);
-              tooltip.style("visibility", "visible");
-      })
-      .on("mousemove", function() {
-          return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
-      })
-      .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+      			.on("mouseover", function(d) {
+              		tooltip.html(d["Programme Name"] + "</br>" + "Expense: " +
+               					d["2016-17-Actual"] + " million HK$" +"</br>"+ "Group: " + d["Head"]);
+              		tooltip.style("visibility", "visible");
+      				})
+      			.on("mousemove", function() {
+          			return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
+      				})
+      			.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
 
 		//add text label
