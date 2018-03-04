@@ -13,6 +13,8 @@ function fin() {
 	//2016-17-Actual financial provision [0, 53443.6] in million HKD
 	var radiusScale = d3.scaleSqrt().domain([0, 53443.6]).range([5, 100]);
 	var colorScale = d3.scaleOrdinal(d3.schemeCategory20c);
+	var hueScale = d3.scaleSequential(d3.interpolateYlGnBu).domain([0, 53443.6]);
+
 	//simulation is a collection of forces about where we want our circles to go
 	//and how we want our circles to interact
 	//so we need to give forces to our simulation
@@ -39,6 +41,9 @@ function fin() {
 	function ready(error, data){
 		if (error) throw error;
 
+		var headKeys = d3.map(data, function(d) {return d["Head"];}).keys();
+		console.log("Head groups: " + headKeys);
+
 		var bubbles = group.selectAll(".artist")
 			.data(data)
 			.enter().append("circle")
@@ -47,7 +52,11 @@ function fin() {
 				return radiusScale(+d["2016-17-Actual"]);
 			})
 			.attr("fill", function(d){
-				return colorScale(d["Head"]);
+				if (+d["2016-17-Actual"] === 0){
+					return "red"; // if provision data is 0, the bubble is filled with black color
+				}
+				return hueScale(+d["2016-17-Actual"]);
+				//colorScale(d["Head"]);
 			}) // need to change the color according to the category(0 expense highlight)
 			.on("click", function(d){
 				console.log(d);
