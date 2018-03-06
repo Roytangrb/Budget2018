@@ -1,6 +1,6 @@
 function fin() {
 	var margin = {top: 30, bottom: 30, left: 30, right: 20};
-	var width = 960 - margin.left - margin.right, height = 960 - margin.top - margin.bottom;
+	var width = 1080 - margin.left - margin.right, height = 700 - margin.top - margin.bottom;
 
 	var canvas = d3.select("#canvas1")
 					.attr("height", height + margin.top + margin.bottom)
@@ -11,7 +11,7 @@ function fin() {
 				//.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 	//2016-17-Actual financial provision [0, 53443.6] in million HKD
-	var radiusScale = d3.scaleSqrt().domain([0, 53443.6]).range([5, 100]);
+	var radiusScale = d3.scaleSqrt().domain([0, 53443.6]).range([5, 80]);
 	var colorScale = d3.scaleOrdinal(d3.schemeCategory20c);
 	var hueScale = d3.scaleSequential(d3.interpolateYlGnBu).domain([0, 53443.6]);
 
@@ -20,10 +20,13 @@ function fin() {
 	//so we need to give forces to our simulation
 	//1. get the bubbles forced to the center of the group
 	//2. make the bubbles not collide
+	var strength = 0.03;
+
+	var forceX = d3.forceX(0).strength(strength);
 
 	var simulation = d3.forceSimulation()
-		.force("x", d3.forceX(0).strength(0.05))
-		.force("y", d3.forceY(0).strength(0.05))
+		.force("x", forceX)
+		.force("y", d3.forceY(0).strength(strength))
 		//2. not collide forceCollide give the radius to avoid collide
 		.force("collide", d3.forceCollide(function(d){
 			return radiusScale(+d["2016-17-Actual"]) + 0.5;
@@ -85,12 +88,37 @@ function fin() {
               		tooltip.html(d["Programme Name"] + "</br>" + "Expense: " +
                					d["2016-17-Actual"] + " million HK$" +"</br>"+ "Group: " + d["Head"]);
               		tooltip.style("visibility", "visible");
+
+              		// if (d["Programme Name"] === "University Grants Committee"){
+              		// 	d3.select(this).attr("fill", "black");
+              		// }
       				})
       			.on("mousemove", function() {
           			return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
       				})
       			.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
+      	//listener of button
+      	d3.select("#combine").on("click", function(){
+      		console.log("combine");
+      		forceX = d3.forceX(0).strength(strength);
+      		simulation.force("x", forceX)
+      			.alphaTarget(0.02)
+      			.restart();
+      	});
+
+      	d3.select("#split").on("click", function(){
+      		console.log("split");
+      		forceX = d3.forceX(function(d){
+						if (+d["Head"] === 170){
+							return 400;
+						} else {
+							return -100;
+						}}).strength(strength);
+      		simulation.force("x", forceX)
+      			.alphaTarget(0.5)
+      			.restart();
+      	});
 
 		//add text label
 		bubbles.append("text")
@@ -113,6 +141,6 @@ function fin() {
 			})
 		}
 
-		console.log("update 4, March 2018");
+		console.log("update 7, March 2018");
 	}
 }
