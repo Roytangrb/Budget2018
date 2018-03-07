@@ -21,8 +21,15 @@ function fin() {
 	//1. get the bubbles forced to the center of the group
 	//2. make the bubbles not collide
 	var strength = 0.03;
+	var grpLabel = group.append("text")
+				.attr("x", 300)
+				.attr("y", -150)
+				.html("Social Security and Welfare")
+				.attr("style", "font-size:20px")
+				.attr("visibility", "hidden");
 
 	var forceX = d3.forceX(0).strength(strength);
+	var forceY = d3.forceY(0).strength(strength);
 
 	var simulation = d3.forceSimulation()
 		.force("x", forceX)
@@ -71,7 +78,8 @@ function fin() {
 			}) // need to change the color according to the category(0 expense highlight)
 			
 			//filter out same group bubbles and add stroke
-			.on("click", function(d){
+			.on("click", clicked);
+			function clicked (d){
 				bubbles.attr("stroke-width", 0);
 				var grp = d["Head"];
 				bubbles.each(function(d){
@@ -79,8 +87,7 @@ function fin() {
 						d3.select(this).attr("stroke", "black").attr("stroke-width", 3);
 					}
 				});
-				console.log(d);
-			});
+			}
 
 			//add tooltip
 			bubbles
@@ -105,19 +112,29 @@ function fin() {
       		simulation.force("x", forceX)
       			.alphaTarget(0.02)
       			.restart();
+
+      		grpLabel.style("visibility", "hidden");
       	});
 
       	d3.select("#split").on("click", function(){
       		console.log("split");
       		forceX = d3.forceX(function(d){
 						if (+d["Head"] === 170){
+							clicked(d);
 							return 400;
 						} else {
 							return -100;
 						}}).strength(strength);
+
+      		forceY = d3.forceY(0).strength(strength);
+      		simulation.force("y", forceY);
       		simulation.force("x", forceX)
       			.alphaTarget(0.5)
       			.restart();
+      			//.alphaDecay();
+
+      		//append split cluster's text
+			grpLabel.style("visibility", "visible");
       	});
 
 		//add text label
@@ -143,4 +160,5 @@ function fin() {
 
 		console.log("update 7, March 2018");
 	}
+
 }
