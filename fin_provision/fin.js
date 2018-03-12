@@ -1,6 +1,6 @@
 function fin() {
 	var margin = {top: 30, bottom: 30, left: 30, right: 20};
-	var width = 1080 - margin.left - margin.right, height = 700 - margin.top - margin.bottom;
+	var width = 1280 - margin.left - margin.right, height = 1400 - margin.top - margin.bottom;
 
 	var canvas = d3.select("#canvas1")
 					.attr("height", height + margin.top + margin.bottom)
@@ -29,11 +29,11 @@ function fin() {
 				.attr("visibility", "visible");
 
 	var forceX = d3.forceX(0).strength(strength);
-	var forceY = d3.forceY(0).strength(strength);
+	var forceY = d3.forceY(-400).strength(strength);
 
 	var simulation = d3.forceSimulation()
 		.force("x", forceX)
-		.force("y", d3.forceY(0).strength(strength))
+		.force("y", forceY)
 		//2. not collide forceCollide give the radius to avoid collide
 		.force("collide", d3.forceCollide(function(d){
 			return radiusScale(+d["2016-17-Actual"]) + 0.5;
@@ -53,7 +53,7 @@ function fin() {
     .html("tooltip");
 
 	d3.queue()
-		.defer(d3.csv, "fin_provision1.csv")
+		.defer(d3.csv, "fin_provision1_cateLabel_sorted.csv")
 		.await(ready)
 
 	function ready(error, data){
@@ -80,6 +80,7 @@ function fin() {
 			//filter out same group bubbles and add stroke
 			.on("click", clicked);
 			function clicked (d){
+				console.log(d);
 				grpLabel.html(d["HeadName"]);
 				bubbles.attr("stroke-width", 0);
 				var grp = d["Head"];
@@ -94,7 +95,7 @@ function fin() {
 			bubbles
       			.on("mouseover", function(d) {
               		tooltip.html(d["Programme Name"] + "</br>" + "Expense: " +
-               					d["2016-17-Actual"] + " million HK$" +"</br>"+ "Group: " + d["Head"]);
+               					d["2016-17-Actual"] + " million HK$" +"</br>"+ "Head Group: " + d["Head"]);
               		tooltip.style("visibility", "visible");
       				})
       			.on("mousemove", function() {
@@ -106,25 +107,37 @@ function fin() {
       	d3.select("#combine").on("click", function(){
       		console.log("combine");
       		forceX = d3.forceX(0).strength(strength);
-      		simulation.force("x", forceX)
-      			.alphaTarget(0.02)
+      		forceY = d3.forceY(-400).strength(strength);
+      		simulation.force("x", forceX).force("y", forceY)
+      			.alphaTarget(0.05)
       			.restart();
       	});
 
       	d3.select("#split").on("click", function(){
       		console.log("split");
       		forceX = d3.forceX(function(d){
-						if (+d["Head"] === 170){
-							clicked(d);
-							return 400;
-						} else {
-							return -100;
-						}}).strength(strength);
+      					var rowIndex = Math.floor(+d["CateSumOrder"] % 5);
+      					var row = Math.floor(+d["CateSumOrder"] % 5) * width / 5 - 550;
+      					console.log("col position: " + rowIndex);
+      					if (+d["CateSumOrder"] === 25){
+      						return row + 100;
+      					} else if (+d["CateSumOrder"] === 26){
+      						return row + 200;
+      					}
+      					return row;
+					}).strength(strength);
 
-      		forceY = d3.forceY(0).strength(strength);
+      		forceY = d3.forceY(function(d){
+      			var colIndex = Math.floor(+d["CateSumOrder"] / 5);
+      			var col = Math.floor(+d["CateSumOrder"] / 5) * height/6 - 600;
+      			console.log("col position: " + colIndex);
+
+      			return col;
+      			
+      		}).strength(strength);
       		simulation.force("y", forceY);
       		simulation.force("x", forceX)
-      			.alphaTarget(0.5)
+      			.alphaTarget(0.4)
       			.restart();
       	});
 
