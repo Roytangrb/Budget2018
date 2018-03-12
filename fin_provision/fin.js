@@ -22,11 +22,11 @@ function fin() {
 	//2. make the bubbles not collide
 	var strength = 0.03;
 	var grpLabel = group.append("text")
-				.attr("x", 300)
-				.attr("y", -150)
-				.html("Social Security and Welfare")
+				.attr("x", 0)
+				.attr("y", -height/2 + 20)
+				.attr("text-anchor", "middle")
 				.attr("style", "font-size:20px")
-				.attr("visibility", "hidden");
+				.attr("visibility", "visible");
 
 	var forceX = d3.forceX(0).strength(strength);
 	var forceY = d3.forceY(0).strength(strength);
@@ -53,7 +53,7 @@ function fin() {
     .html("tooltip");
 
 	d3.queue()
-		.defer(d3.csv, "finProvision.csv")
+		.defer(d3.csv, "fin_provision1.csv")
 		.await(ready)
 
 	function ready(error, data){
@@ -80,6 +80,7 @@ function fin() {
 			//filter out same group bubbles and add stroke
 			.on("click", clicked);
 			function clicked (d){
+				grpLabel.html(d["HeadName"]);
 				bubbles.attr("stroke-width", 0);
 				var grp = d["Head"];
 				bubbles.each(function(d){
@@ -95,10 +96,6 @@ function fin() {
               		tooltip.html(d["Programme Name"] + "</br>" + "Expense: " +
                					d["2016-17-Actual"] + " million HK$" +"</br>"+ "Group: " + d["Head"]);
               		tooltip.style("visibility", "visible");
-
-              		// if (d["Programme Name"] === "University Grants Committee"){
-              		// 	d3.select(this).attr("fill", "black");
-              		// }
       				})
       			.on("mousemove", function() {
           			return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");
@@ -112,8 +109,6 @@ function fin() {
       		simulation.force("x", forceX)
       			.alphaTarget(0.02)
       			.restart();
-
-      		grpLabel.style("visibility", "hidden");
       	});
 
       	d3.select("#split").on("click", function(){
@@ -131,10 +126,6 @@ function fin() {
       		simulation.force("x", forceX)
       			.alphaTarget(0.5)
       			.restart();
-      			//.alphaDecay();
-
-      		//append split cluster's text
-			grpLabel.style("visibility", "visible");
       	});
 
 		//add text label
