@@ -115,26 +115,52 @@ function fin() {
 
       	d3.select("#split").on("click", function(){
       		console.log("split");
+      		var rowIndex, row, colIndex, col;
+      		//append title for each when split
+      		var appendClusterLabel = function (_col, _row, word){
+      			group.append("text")
+      				.attr("text-anchor", "middle")
+      				.attr("x", _col).attr("y", _row)
+      				.attr("font-size", 3).html(word);
+      			};
+
       		forceX = d3.forceX(function(d){
-      					var rowIndex = Math.floor(+d["CateSumOrder"] % 5);
-      					var row = Math.floor(+d["CateSumOrder"] % 5) * width / 5 - 550;
-      					console.log("col position: " + rowIndex);
+      					rowIndex = Math.floor(+d["CateSumOrder"] % 5);
+      					row = Math.floor(+d["CateSumOrder"] % 5) * width / 5 - 550;
+      					
       					if (+d["CateSumOrder"] === 25){
-      						return row + 100;
+      						row =  row + 100;
       					} else if (+d["CateSumOrder"] === 26){
-      						return row + 200;
+      						row =  row + 300;
       					}
       					return row;
-					}).strength(strength);
+					}).strength(function(d){
+						if (+d["CateSumOrder"] === 26){
+      						return  0.02;
+      					}
+						return strength;
+					});
 
       		forceY = d3.forceY(function(d){
-      			var colIndex = Math.floor(+d["CateSumOrder"] / 5);
-      			var col = Math.floor(+d["CateSumOrder"] / 5) * height/6 - 600;
-      			console.log("col position: " + colIndex);
+      			colIndex = Math.floor(+d["CateSumOrder"] / 5);
+      			col = Math.floor(+d["CateSumOrder"] / 5) * height/6 - 600;
 
+      			var temp_row = Math.floor(+d["CateSumOrder"] % 5) * width / 5 - 550;
+      			//append label
+      			appendClusterLabel(col, temp_row, d["HeadName"]);
+
+      			if (+d["CateSumOrder"] === 26 || +d["CateSumOrder"] === 25){
+      				col = col + 50;
+      			}
+      			
       			return col;
       			
-      		}).strength(strength);
+      		}).strength(function(d){
+						if (+d["CateSumOrder"] === 26){
+      						return  0.02;
+      					}
+						return strength;
+					});
       		simulation.force("y", forceY);
       		simulation.force("x", forceX)
       			.alphaTarget(0.4)
