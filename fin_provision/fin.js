@@ -173,8 +173,8 @@ function fin() {
       			else if (+d["Head"] === 169){
       				x_offset = 0;
       				y_offset= 60;
-      				appendClusterLabel(temp_row + x_offset, col - y_offset, "<tspan x="+(-25)+" dy="+1.2+"em>Secretariat, Commissioner on Interception of </tspan>"
-      																		+"<tspan x="+(-25)+" dy="+1.2+"em>Communication and Surveillance</tspan>");
+      				appendClusterLabel(temp_row + x_offset, col - y_offset, "<tspan x="+(-325)+" dy="+1.2+"em>Secretariat, Commissioner on Interception of </tspan>"
+      																		+"<tspan x="+(-325)+" dy="+1.2+"em>Communication and Surveillance</tspan>");
       			} 
 
       			else {appendClusterLabel(temp_row + x_offset, col - y_offset, d["HeadName"]);}
