@@ -5,7 +5,7 @@
 	<script type="text/javascript" src="fin.js"></script>
 
 	<style type="text/css">
-		.chart {
+		#canvas1 {
 			background-color: rgba(220, 220, 220, 0.5);
 		}
 
@@ -17,19 +17,26 @@
     		position: absolute;
     		top: 50%;
 		}
+
+		.header h1, h2, h3{
+			text-align: center;
+		}
 	</style>
 </head>
 
 <body>
 	<div class="chart">
 		<div>
-		<h1>2018 Budget - 2016-2017 Actual Financial Provision</h1>
-		<h3>CLICK bubbles to filter out provisions in the same Head</h3>
-		<h3><span style="color:red">Red</span> bubbles represent expenses less than 1 million</h3>
+			<div class="header">
+				<h1>2018 Budget - 2016-2017 Actual Financial Provision</h1>
+				<h3>CLICK bubbles to filter out provisions in the same Head</h3>
+				<h3><span style="color:red">Red</span> bubbles represent expenses less than 1 million</h3>
+			</div>
 		<div class="buttonWrapper">
 			<button id="combine">Combine</button>
 			<button id="split">Cluster</button>
 		</div>
+		<br>
 		
 		</div>
 		<svg id="canvas1"></svg>
