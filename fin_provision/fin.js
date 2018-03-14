@@ -2,6 +2,9 @@ function fin() {
 	var margin = {top: 30, bottom: 30, left: 30, right: 20};
 	var width = 1280 - margin.left - margin.right, height = 1400 - margin.top - margin.bottom;
 
+	var container = d3.select(".chart")
+					.attr("height", height + margin.top + margin.bottom)
+					.attr("width", width  + margin.left + margin.right);
 	var canvas = d3.select("#canvas1")
 					.attr("height", height + margin.top + margin.bottom)
 					.attr("width", width  + margin.left + margin.right);
@@ -106,6 +109,9 @@ function fin() {
       	//listener of button
       	d3.select("#combine").on("click", function(){
       		console.log("combine");
+      		grpLabel.attr("visibility", "visible");
+      		d3.selectAll(".clusterLabel").attr("visibility", "hidden");
+
       		forceX = d3.forceX(0).strength(strength);
       		forceY = d3.forceY(-400).strength(strength);
       		simulation.force("x", forceX).force("y", forceY)
@@ -115,13 +121,15 @@ function fin() {
 
       	d3.select("#split").on("click", function(){
       		console.log("split");
+      		grpLabel.attr("visibility", "hidden");
       		var rowIndex, row, colIndex, col;
       		//append title for each when split
-      		var appendClusterLabel = function (_col, _row, word){
+      		var appendClusterLabel = function (x, y, word){
       			group.append("text")
+      				.attr("class", "clusterLabel")
       				.attr("text-anchor", "middle")
-      				.attr("x", _col).attr("y", _row)
-      				.attr("font-size", 3).html(word);
+      				.attr("x", x).attr("y", y)
+      				.attr("font-size", 12).html(word);
       			};
 
       		forceX = d3.forceX(function(d){
@@ -145,9 +153,32 @@ function fin() {
       			colIndex = Math.floor(+d["CateSumOrder"] / 5);
       			col = Math.floor(+d["CateSumOrder"] / 5) * height/6 - 600;
 
+      			/*append label*/
       			var temp_row = Math.floor(+d["CateSumOrder"] % 5) * width / 5 - 550;
-      			//append label
-      			appendClusterLabel(col, temp_row, d["HeadName"]);
+      			var x_offset = 10;
+      			var y_offset = 50;
+      			//console.log(d["CateSumOrder"] + ": " + d["HeadName"]);
+      			if (+d["CateSumOrder"] === 26){
+      				x_offset = 50;
+      			}
+      			
+      			if (+d["Head"] === 142){
+      				x_offset = 0;
+      				y_offset=70;
+      				appendClusterLabel(temp_row + x_offset, col - y_offset, "<tspan x="+(-25)+" dy="+1.2+"em>Government Secretariat: Offices of</tspan>"
+      																		+"<tspan x="+(-25)+" dy="+1.2+"em>the Chief Secretary for Administration</tspan>"
+      																		+"<tspan x="+(-25)+" dy="+1.2+"em>and the Financial Secretary</tspan>");
+      			}
+      			
+      			else if (+d["Head"] === 169){
+      				x_offset = 0;
+      				y_offset= 60;
+      				appendClusterLabel(temp_row + x_offset, col - y_offset, "<tspan x="+(-25)+" dy="+1.2+"em>Secretariat, Commissioner on Interception of </tspan>"
+      																		+"<tspan x="+(-25)+" dy="+1.2+"em>Communication and Surveillance</tspan>");
+      			} 
+
+      			else {appendClusterLabel(temp_row + x_offset, col - y_offset, d["HeadName"]);}
+      			/*append label*/
 
       			if (+d["CateSumOrder"] === 26 || +d["CateSumOrder"] === 25){
       				col = col + 50;
