@@ -56,17 +56,29 @@ function fin() {
     .html("tooltip");
 
 	d3.queue()
+	//try different sets of data
 		.defer(d3.csv, "fin_provision1_cateLabel_sorted.csv")
+		.defer(d3.csv, "HeadAdded/fin_provision_2018_head83.csv")
+		.defer(d3.csv, "HeadAdded/fin_provision_2017_head83.csv")
+		.defer(d3.csv, "HeadAdded/fin_provision_2016_head83.csv")
+		.defer(d3.csv, "HeadAdded/fin_provision_2015_head82.csv")
 		.await(ready)
 
-	function ready(error, data){
+	function ready(error, data18_1, data18, data17, data16, data15){
 		if (error) throw error;
+
+		//test log
+		console.log(data18);
+		console.log(data17);
+		console.log(data16);
+		console.log(data15);
+		var data = data18_1;
 
 		var headKeys = d3.map(data, function(d) {return d["Head"];}).keys();
 		console.log("Head groups: " + headKeys);
 
 		var bubbles = group.selectAll(".artist")
-			.data(data)
+			.data(data, data["Head"])
 			.enter().append("circle")
 			.attr("class", "artist")
 			.attr("r", function(d){
@@ -77,7 +89,6 @@ function fin() {
 					return "red"; // if provision data is 0, the bubble is filled with black color
 				}
 				return hueScale(+d["2016-17-Actual"]);
-				//colorScale(d["Head"]);
 			}) // need to change the color according to the category(0 expense highlight)
 			
 			//filter out same group bubbles and add stroke
@@ -106,6 +117,57 @@ function fin() {
       				})
       			.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
+      	//listen for change data set
+      	/*data update section start*/
+      	function changeDataSet(year){
+      		var new_data;
+      		var actualName = "";
+
+      		if(year === 15)  new_data = data15;
+      		if(year === 16)  new_data = data16;
+      		if(year === 17)  new_data = data17;
+      		//temp for 2018
+      		if(year === 18)  new_data = data18_1;
+      		actualName = "20"+(year-2)+"-"+(year-1)+"-Actual";
+      		bubbles.data(new_data, new_data["Head"]).transition().duration(2000)
+      				.attr("r", function(d){
+							return radiusScale(+d[actualName]);
+					})
+					.attr("fill", function(d){
+						if (+d[actualName] === 0){
+							return "red"; 
+						}
+						return hueScale(+d[actualName]);
+					});
+			
+			//fire the simulation again
+			simulation.nodes(new_data)
+			.on("tick", ticked);
+			//reset collide force
+			simulation.force("collide", d3.forceCollide(function(d){
+				return radiusScale(+d[actualName]) + 0.5;
+			}))
+				.alphaTarget(0.1)
+      			.restart();
+      	}
+      	d3.select("#Data2015").on("click", function(){
+      		changeDataSet(15);
+      		console.log("2015 data is updated");
+      	});
+      	d3.select("#Data2016").on("click", function(){
+      		changeDataSet(16);
+      		console.log("2016 data is updated");
+      	});
+      	d3.select("#Data2017").on("click", function(){
+      		changeDataSet(17);
+      		console.log("2017 data is updated");
+      	});
+      	d3.select("#Data2018").on("click", function(){
+      		changeDataSet(18);
+      		console.log("2018 data is updated");
+      	});
+      	/*data update section end*/
+
       	//listener of button
       	d3.select("#combine").on("click", function(){
       		console.log("combine");
@@ -120,6 +182,9 @@ function fin() {
       	});
 
       	d3.select("#split").on("click", function(){
+      		//temp code to change back to split function
+      		changeDataSet(18);
+
       		console.log("split");
       		grpLabel.attr("visibility", "hidden");
       		var rowIndex, row, colIndex, col;
@@ -219,7 +284,7 @@ function fin() {
 			})
 		}
 
-		console.log("update 7, March 2018");
+		console.log("update2 20, March 2018, split and combine function is now only applicable to 2018's data, so when clicked the bubbles should 2018' data");
 	}
 
 }
