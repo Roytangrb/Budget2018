@@ -2,6 +2,7 @@
 import './main.css'
 //import library
 import * as d3 from "d3"
+import sort from './functions/sort';
 
 const bubblesInteractionEffects = (bubbles)=>{
     //add tooltip
@@ -43,6 +44,8 @@ const fireSimulation = (data, radiusScale,bubbles)=>{
             .attr("cx", d=>d.x)
             .attr("cy", d=>d.y)
     });
+    
+    return simulation
 }
 
 const switchDataSet = async (year)=>{
@@ -104,8 +107,10 @@ const renderChart = (data)=>{
 
     //add interactions
     bubblesInteractionEffects(bubbles)
-    //fire simulation
-    fireSimulation(data, radiusScale, bubbles)
+    //fire simulation, pass to other functions,listen for trigger
+    const simulation = fireSimulation(data, radiusScale, bubbles)
+    const sortButton = document.querySelector('#sort')
+    sortButton.addEventListener('click', (event)=>{sort(simulation, radiusScale)})
 }
 
 const initBubbles = (year)=>{
@@ -161,7 +166,9 @@ const updateChart = async (year)=>{
     bubblesInteractionEffects(entered_bubbles)
     //refire simulation
     let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
-    fireSimulation(new_data, radiusScale, all_bubbles)
+    const simulation = fireSimulation(new_data, radiusScale, all_bubbles)
+    const sortButton = document.querySelector('#sort')
+    sortButton.addEventListener('click', (event)=>{sort(simulation, radiusScale)})
 }
 
 //init only at large screen
