@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "host": "http-server -c-1 ./"
+    "dev": "webpack-dev-server",
+    "build": "webpack",
+    "publish": "node ./utils/deploy"
   },
   "repository": {
     "type": "git",
@@ -19,5 +21,18 @@
   "homepage": "https://github.com/Roytangrb/Budget2018#readme",
   "dependencies": {
     "d3": "^5.5.0"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.2",
+    "css-loader": "^1.0.0",
+    "gh-pages": "^1.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "path": "^0.12.7",
+    "script-ext-html-webpack-plugin": "^2.0.1",
+    "style-loader": "^0.22.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
   }
 }

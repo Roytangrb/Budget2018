@@ -1,3 +1,8 @@
+//import main.css
+import './main.css'
+//import library
+import * as d3 from "d3"
+
 const bubblesInteractionEffects = (bubbles)=>{
     //add tooltip
     const tooltip = d3.select(".tooltip")
@@ -42,7 +47,7 @@ const fireSimulation = (data, radiusScale,bubbles)=>{
 
 const switchDataSet = async (year)=>{
     //TODO: Validation
-    let dataPath = `../Data Process/20${year}/fin_provision/fin_provision_chi_20${year}.csv`
+    let dataPath = `data/20${year}/fin_provision/fin_provision_chi_20${year}.csv`
 
     //reading csv
     let data = await d3.csv(dataPath, (d)=>{
@@ -104,7 +109,7 @@ const renderChart = (data)=>{
 }
 
 const initBubbles = (year)=>{
-    d3.csv(`../Data Process/20${year}/fin_provision/fin_provision_chi_20${year}.csv`, (d)=>{
+    d3.csv(`data/20${year}/fin_provision/fin_provision_chi_20${year}.csv`, (d)=>{
         return {
             "Head": +d["總目"],
             "Programme": +d["綱領編號"],

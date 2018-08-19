@@ -1,7 +1,7 @@
 # Budget2018
 
 ## Dev Commmand
-* `npm run host`: `http-server -c-1 ./` : Serve public directory with simple http-server (global deps, cache disabled)
+* `npm run dev` : Using Webpack Dev Server, on `port:7700`
 
 ## Data Process
 - Linebreak in csv/excel: delete in advance before reading into by `d3.csv`
