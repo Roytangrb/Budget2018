@@ -1,3 +1,5 @@
+//initial chart and bubbles
+let bubbles = null
 const bubblesInteractionEffects = (bubbles)=>{
     //add text label
     bubbles.append("text")
@@ -66,7 +68,7 @@ const switchDataSet = async (year)=>{
             "Programme Name": d["綱領"],
             "Sector": d["機構"],
             "Budget": +d[`20${year}-${year+1}`], // Budget estimate, in million
-            "id": `${+d["總目"]}-${+d["綱領編號"]}`
+            "id": `${+d["總目"]}-${+d["綱領編號"]}-${d["機構"]}`
         }
     })
     data.columns = ["Head", "Programme", "Programme Name", "Sector", "Budget"]
@@ -112,14 +114,10 @@ const renderChart = (data)=>{
                     })
     //fire simulation
     fireSimulation(data, radiusScale)
-    //add interactions
-    bubblesInteractionEffects(bubbles)
 
     return bubbles
 }
 
-//initial chart and bubbles
-let bubbles = null
 const initBubbles = ()=>{
     d3.csv('../Data Process/2018/fin_provision/fin_provision_chi_2018.csv', (d)=>{
         return {
@@ -128,11 +126,13 @@ const initBubbles = ()=>{
             "Programme Name": d["綱領"],
             "Sector": d["機構"],
             "Budget": +d['2018-19'], // Budget estimate, in million
-            "id": `${+d["總目"]}-${+d["綱領編號"]}`
+            "id": `${+d["總目"]}-${+d["綱領編號"]}-${d["機構"]}`
         }
     }).then(data=>{
         data.columns = ["Head", "Programme", "Programme Name", "Sector", "Budget"]
         bubbles = renderChart(data)
+        //add interactions
+        bubblesInteractionEffects(bubbles)
     })
 }
 initBubbles()
@@ -148,12 +148,16 @@ const updateChart = async (year)=>{
 
     //update bubbles
     let bubbles = d3.selectAll('#canvas g .artist')
-    console.log(bubbles)
     let update_bubbles = bubbles.data(new_data, d=>d.id)
 
-    update_bubbles.attr('fill', 'blue')
-    update_bubbles.exit().attr('fill', 'black')
+    update_bubbles.enter().append("circle")
+        .attr("class", "artist")
+        .attr("r", function(d){
+            return radiusScale(d["Budget"]);
+        })
+        .attr('fill', 'green')
 
+    update_bubbles.exit().attr('fill', 'black')
     //refire simulation
     fireSimulation(new_data, radiusScale)
 }
