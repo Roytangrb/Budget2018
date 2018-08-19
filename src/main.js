@@ -76,7 +76,7 @@ const switchDataSet = async (year)=>{
 }
 
 const renderChart = (data)=>{
-    const containerW = 1280, containerH = 800
+    const containerW = 1024, containerH = 800
 
     const margin = {top: 30, bottom: 30, left: 30, right: 20}
 	const width = containerW - margin.left - margin.right, height = containerH - margin.top - margin.bottom
@@ -135,7 +135,11 @@ const initBubbles = ()=>{
         bubblesInteractionEffects(bubbles)
     })
 }
-initBubbles()
+
+//init only at large screen
+if (screen.width >=1023){
+    initBubbles()
+}
 
 //update chart
 const updateChart = async (year)=>{
