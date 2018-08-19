@@ -41,19 +41,8 @@ const fireSimulation = (data, radiusScale,bubbles)=>{
 }
 
 const switchDataSet = async (year)=>{
-    let dataPath = ''
-    switch(year) {
-        case 18:
-            dataPath = '../Data Process/2018/fin_provision/fin_provision_chi_2018.csv';
-            break;
-        case 17:
-            dataPath = '../Data Process/2017/fin_provision/fin_provision_chi_2017.csv';
-            break;
-        case 16:
-            dataPath = '../Data Process/2016/fin_provision/fin_provision_chi_2016.csv';
-            break;
-        default: return 
-    }
+    //TODO: Validation
+    let dataPath = `../Data Process/20${year}/fin_provision/fin_provision_chi_20${year}.csv`
 
     //reading csv
     let data = await d3.csv(dataPath, (d)=>{
@@ -130,11 +119,6 @@ const initBubbles = (year)=>{
     })
 }
 
-//init only at large screen
-if (screen.width >=1023){
-    initBubbles(17)
-}
-
 //update chart
 const updateChart = async (year)=>{
     let new_data = await switchDataSet(year)
@@ -174,5 +158,17 @@ const updateChart = async (year)=>{
     let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
     fireSimulation(new_data, radiusScale, all_bubbles)
 }
-window.updateChart = updateChart
+
+//init only at large screen
+if (screen.width >=1023){
+    initBubbles(18)
+}
+//listener for year change
+const select = document.querySelector('#yearOptions')
+const onChangeHandler = ()=>{
+    let year = +select.options[select.selectedIndex].value
+    updateChart(year)
+}
+select.addEventListener('change', onChangeHandler)
+
 

@@ -18,9 +18,12 @@
                 <button>Break Down</button>
                 <button>Sort</button>
                 <button>Combine</button>
-                <button onclick="window.updateChart(16)">Switch 1617 </button>
-                <button onclick="window.updateChart(17)">Switch 1718 </button>
-                <button onclick="window.updateChart(18)">Switch 1819 </button>
+                <select id="yearOptions">
+                    <option value="15">2015</option>
+                    <option value="16">2016</option>
+                    <option value="17">2017</option>
+                    <option value="18" selected="selected">2018</option>
+                </select>
             </div>
             <svg id="canvas"></svg>
         </div>
