@@ -25,6 +25,26 @@ const bubblesInteractionEffects = (bubbles)=>{
             }
         )
 }
+const fireSimulation = (data, radiusScale)=>{
+    //create simulation
+    const strength = 0.03;
+    const focusX = 0, focusY = -100
+
+	const forceX = d3.forceX(focusX).strength(strength);
+	const forceY = d3.forceY(focusY).strength(strength);
+	const simulation = d3.forceSimulation()
+		.force("x", forceX)
+		.force("y", forceY)
+        .force("collide", d3.forceCollide(d=>radiusScale(d["Budget"]) + 0.5))
+    
+
+    //fire the simulation
+    simulation.nodes(data).on("tick", () =>{
+        bubbles
+            .attr("cx", d=>d.x)
+            .attr("cy", d=>d.y)
+    });
+}
 
 const switchDataSet = async (year)=>{
     let dataPath = ''
@@ -45,7 +65,8 @@ const switchDataSet = async (year)=>{
             "Programme": +d["綱領編號"],
             "Programme Name": d["綱領"],
             "Sector": d["機構"],
-            "Budget": +d[`20${year}-${year+1}`] // Budget estimate, in million
+            "Budget": +d[`20${year}-${year+1}`], // Budget estimate, in million
+            "id": `${+d["總目"]}-${+d["綱領編號"]}`
         }
     })
     data.columns = ["Head", "Programme", "Programme Name", "Sector", "Budget"]
@@ -75,21 +96,9 @@ const renderChart = (data)=>{
     //create buddle area raduis scale
     const radiusScale = d3.scaleSqrt().domain(budgetMinMax).range([5, 80]);
 
-
-    //create simulation
-    const strength = 0.03;
-    const focusX = 0, focusY = -100
-
-	const forceX = d3.forceX(focusX).strength(strength);
-	const forceY = d3.forceY(focusY).strength(strength);
-	const simulation = d3.forceSimulation()
-		.force("x", forceX)
-		.force("y", forceY)
-        .force("collide", d3.forceCollide(d=>radiusScale(d["Budget"]) + 0.5))
-    
     //drawing bubbles
     const bubbles = group.selectAll(".artist")
-                    .data(data, data["Programme Name"])
+                    .data(data, d=>d.id)
                     .enter().append("circle")
                     .attr("class", "artist")
                     .attr("r", function(d){
@@ -101,14 +110,8 @@ const renderChart = (data)=>{
                         }
                         return "rgba(200, 200, 200, 0.5)"
                     })
-    
-    //fire the simulation
-    simulation.nodes(data).on("tick", () =>{
-        bubbles
-            .attr("cx", d=>d.x)
-            .attr("cy", d=>d.y)
-    });
-
+    //fire simulation
+    fireSimulation(data, radiusScale)
     //add interactions
     bubblesInteractionEffects(bubbles)
 
@@ -124,7 +127,8 @@ const initBubbles = ()=>{
             "Programme": +d["綱領編號"],
             "Programme Name": d["綱領"],
             "Sector": d["機構"],
-            "Budget": +d['2018-19'] // Budget estimate, in million
+            "Budget": +d['2018-19'], // Budget estimate, in million
+            "id": `${+d["總目"]}-${+d["綱領編號"]}`
         }
     }).then(data=>{
         data.columns = ["Head", "Programme", "Programme Name", "Sector", "Budget"]
@@ -134,14 +138,24 @@ const initBubbles = ()=>{
 initBubbles()
 
 //update chart
-const updateChart = async ()=>{
-    let new_data = await switchDataSet(17)
-    console.log(new_data)
-    // bubbles
-    //     .data(new_data)
-    //     .transition()
-    //     .fill('red')
+const updateChart = async (year)=>{
+    let new_data = await switchDataSet(year)
+    // TODO: radius scale redefine
+    //find budget extent: [min, max]
+    const budgetMinMax = d3.extent(new_data.map(item => item['Budget']))
+    //create buddle area raduis scale
+    const radiusScale = d3.scaleSqrt().domain(budgetMinMax).range([5, 80]);
+
+    //update bubbles
+    let bubbles = d3.selectAll('#canvas g .artist')
+    console.log(bubbles)
+    let update_bubbles = bubbles.data(new_data, d=>d.id)
+
+    update_bubbles.attr('fill', 'blue')
+    update_bubbles.exit().attr('fill', 'black')
+
+    //refire simulation
+    fireSimulation(new_data, radiusScale)
 }
-window.switchDataSet = switchDataSet
 window.updateChart = updateChart
 
