@@ -1,0 +1,23 @@
+{
+  "name": "budget2018",
+  "version": "1.0.0",
+  "description": "Visualization of HK budget data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "host": "http-server ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roytangrb/Budget2018.git"
+  },
+  "author": "Roy Tang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Roytangrb/Budget2018/issues"
+  },
+  "homepage": "https://github.com/Roytangrb/Budget2018#readme",
+  "dependencies": {
+    "d3": "^5.5.0"
+  }
+}
