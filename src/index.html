@@ -14,8 +14,17 @@
             <p>Oops...Screen too small<br>Please view on a larger screen</p>
         </div>
         <div class=".chart-container">
+            <div id="toolbar">
+                <button>Break Down</button>
+                <button>Sort</button>
+                <button>Combine</button>
+                <button onclick="window.updateChart(16)">Switch 1617 </button>
+                <button onclick="window.updateChart(17)">Switch 1718 </button>
+                <button onclick="window.updateChart(18)">Switch 1819 </button>
+            </div>
             <svg id="canvas"></svg>
         </div>
+        <div class="tooltip"></div>
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="./main.js"></script>
     </body>

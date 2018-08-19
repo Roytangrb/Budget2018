@@ -1,14 +1,6 @@
-//initial chart and bubbles
-let bubbles = null
 const bubblesInteractionEffects = (bubbles)=>{
-    //add text label
-    bubbles.append("text")
-        .attr("dy", "0.5em")
-        .style("text-anchor", "middle")
-        .text(d=>d["Programme Name"])
-
     //add tooltip
-    const tooltip = d3.select("body").append("div").attr('class', 'tooltip')
+    const tooltip = d3.select(".tooltip")
 
     bubbles
         .on("mouseover",d=>{
@@ -27,7 +19,7 @@ const bubblesInteractionEffects = (bubbles)=>{
             }
         )
 }
-const fireSimulation = (data, radiusScale)=>{
+const fireSimulation = (data, radiusScale,bubbles)=>{
     //create simulation
     const strength = 0.03;
     const focusX = 0, focusY = -100
@@ -57,6 +49,9 @@ const switchDataSet = async (year)=>{
         case 17:
             dataPath = '../Data Process/2017/fin_provision/fin_provision_chi_2017.csv';
             break;
+        case 16:
+            dataPath = '../Data Process/2016/fin_provision/fin_provision_chi_2016.csv';
+            break;
         default: return 
     }
 
@@ -68,7 +63,7 @@ const switchDataSet = async (year)=>{
             "Programme Name": d["綱領"],
             "Sector": d["機構"],
             "Budget": +d[`20${year}-${year+1}`], // Budget estimate, in million
-            "id": `${+d["總目"]}-${+d["綱領編號"]}-${d["機構"]}`
+            "id": `${+d["總目"]}-${d["綱領"]}-${d["機構"]}`
         }
     })
     data.columns = ["Head", "Programme", "Programme Name", "Sector", "Budget"]
@@ -78,7 +73,7 @@ const switchDataSet = async (year)=>{
 const renderChart = (data)=>{
     const containerW = 1024, containerH = 800
 
-    const margin = {top: 30, bottom: 30, left: 30, right: 20}
+    const margin = {top: 50, bottom: 30, left: 30, right: 20}
 	const width = containerW - margin.left - margin.right, height = containerH - margin.top - margin.bottom
 
 	const container = d3.select(".chart-container")
@@ -112,33 +107,32 @@ const renderChart = (data)=>{
                         }
                         return "rgba(200, 200, 200, 0.5)"
                     })
-    //fire simulation
-    fireSimulation(data, radiusScale)
 
-    return bubbles
+    //add interactions
+    bubblesInteractionEffects(bubbles)
+    //fire simulation
+    fireSimulation(data, radiusScale, bubbles)
 }
 
-const initBubbles = ()=>{
-    d3.csv('../Data Process/2018/fin_provision/fin_provision_chi_2018.csv', (d)=>{
+const initBubbles = (year)=>{
+    d3.csv(`../Data Process/20${year}/fin_provision/fin_provision_chi_20${year}.csv`, (d)=>{
         return {
             "Head": +d["總目"],
             "Programme": +d["綱領編號"],
             "Programme Name": d["綱領"],
             "Sector": d["機構"],
-            "Budget": +d['2018-19'], // Budget estimate, in million
-            "id": `${+d["總目"]}-${+d["綱領編號"]}-${d["機構"]}`
+            "Budget": +d[`20${year}-${year+1}`], // Budget estimate, in million
+            "id": `${+d["總目"]}-${d["綱領"]}-${d["機構"]}`
         }
     }).then(data=>{
         data.columns = ["Head", "Programme", "Programme Name", "Sector", "Budget"]
-        bubbles = renderChart(data)
-        //add interactions
-        bubblesInteractionEffects(bubbles)
+        renderChart(data)
     })
 }
 
 //init only at large screen
 if (screen.width >=1023){
-    initBubbles()
+    initBubbles(17)
 }
 
 //update chart
@@ -150,20 +144,35 @@ const updateChart = async (year)=>{
     //create buddle area raduis scale
     const radiusScale = d3.scaleSqrt().domain(budgetMinMax).range([5, 80]);
 
-    //update bubbles
-    let bubbles = d3.selectAll('#canvas g .artist')
-    let update_bubbles = bubbles.data(new_data, d=>d.id)
+    //update bubbles, bubbles re-bind to new_data
+    let bubbles = d3.select('#canvas').select('g').selectAll('circle').data(new_data, d=>d.id)
 
-    update_bubbles.enter().append("circle")
-        .attr("class", "artist")
+    //TODO: exit grounp should be moved into cluster and show
+    bubbles.exit().transition()
+            .duration(2000)
+            .attr('fill', 'black')
+            .attr("r", 0)
+            .remove();
+
+    bubbles
+        .enter()
+        .append("circle")
+        .attr("r", 0)
+        .transition()
+        .duration(2000)
         .attr("r", function(d){
             return radiusScale(d["Budget"]);
         })
-        .attr('fill', 'green')
+        .attr('fill', 'rgba(30, 30, 255, 0.5)')
+        .attr("class", "artist")
+        .attr("class", "newly-added")
 
-    update_bubbles.exit().attr('fill', 'black')
+    //add interactions to new bubbles
+    let entered_bubbles = d3.select('#canvas').select('g').selectAll('.newly-added')
+    bubblesInteractionEffects(entered_bubbles)
     //refire simulation
-    fireSimulation(new_data, radiusScale)
+    let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
+    fireSimulation(new_data, radiusScale, all_bubbles)
 }
 window.updateChart = updateChart
 
