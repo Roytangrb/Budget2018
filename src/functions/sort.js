@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 const sort = (simulation, radiusScale)=>{
     const forceX = d3.forceX(d=>{
         let radius = radiusScale(d['Budget'])
-        return radius < 40? -200 : 200
+        return radius < 40? -250 : 250
     }).strength(d=>{
         let radius = radiusScale(d['Budget'])
         return radius < 40? 0.01 : 0.05
@@ -15,7 +15,7 @@ const sort = (simulation, radiusScale)=>{
 
     simulation.force("y", forceY)
     simulation.force("x", forceX)
-                .alphaTarget(0.5)
+                .alphaTarget(0.3)
                 .restart();
 }
 

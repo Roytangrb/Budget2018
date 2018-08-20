@@ -3,6 +3,8 @@ import './main.css'
 //import library
 import * as d3 from "d3"
 import sort from './functions/sort';
+import split from './functions/splitByHead';
+import combine from './functions/combine';
 
 const bubblesInteractionEffects = (bubbles)=>{
     //add tooltip
@@ -35,7 +37,7 @@ const fireSimulation = (data, radiusScale,bubbles)=>{
 	const simulation = d3.forceSimulation()
 		.force("x", forceX)
 		.force("y", forceY)
-        .force("collide", d3.forceCollide(d=>radiusScale(d["Budget"]) + 0.5))
+        .force("collide", d3.forceCollide(d=>radiusScale(d["Budget"]) + 1))
     
 
     //fire the simulation
@@ -68,11 +70,11 @@ const switchDataSet = async (year)=>{
 }
 
 const renderChart = (data)=>{
-    const containerW = 1024, containerH = 800
+    const containerW = 1024, containerH = 1400
 
-    const margin = {top: 50, bottom: 30, left: 30, right: 20}
+    const margin = {top: 0, bottom: 30, left: 30, right: 20}
 	const width = containerW - margin.left - margin.right, height = containerH - margin.top - margin.bottom
-
+    const centerTranslateY = 400
 	const container = d3.select(".chart-container")
                         .attr("width", containerW)
                         .attr("height", containerH)
@@ -83,7 +85,7 @@ const renderChart = (data)=>{
                     .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
 	const group = canvas.append("g")
-				.attr("transform", `translate(${width/2}, ${height/2})`);
+				.attr("transform", `translate(${width/2}, ${centerTranslateY})`);
 
     //find budget extent: [min, max]
     const budgetMinMax = d3.extent(data.map(item => item['Budget']))
@@ -111,6 +113,14 @@ const renderChart = (data)=>{
     const simulation = fireSimulation(data, radiusScale, bubbles)
     const sortButton = document.querySelector('#sort')
     sortButton.addEventListener('click', (event)=>{sort(simulation, radiusScale)})
+
+    //listen for split 
+    const splitButton = document.querySelector('#splitToGroup')
+    splitButton.addEventListener('click', (event)=>{split(data, simulation, radiusScale)})
+
+    //listen for combine
+    const combineButton = document.querySelector('#combine')
+    combineButton.addEventListener('click', event=>{combine(simulation, radiusScale)})
 }
 
 const initBubbles = (year)=>{
@@ -168,7 +178,11 @@ const updateChart = async (year)=>{
     let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
     const simulation = fireSimulation(new_data, radiusScale, all_bubbles)
     const sortButton = document.querySelector('#sort')
-    sortButton.addEventListener('click', (event)=>{sort(simulation, radiusScale)})
+    sortButton.addEventListener('click', event=>{sort(simulation, radiusScale)})
+    const splitButton = document.querySelector('#splitToGroup')
+    splitButton.addEventListener('click', event=>{split(new_data, simulation)})
+    const combineButton = document.querySelector('#combine')
+    combineButton.addEventListener('click', event=>{combine(simulation, radiusScale)})
 }
 
 //init only at large screen
