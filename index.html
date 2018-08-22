@@ -11,16 +11,16 @@
             <p>Oops...Screen too small<br>Please view on a larger screen</p>
         </div>
         <div class=".chart-container">
-            <h3>Estimated Financial Provision 2018-2019</h3>
+            <h3>Estimated Financial Provision 2015-2018</h3>
             <div id="toolbar">
                 <button id="splitToGroup">Break Down</button>
                 <button id="sort">Sort</button>
                 <button id="combine">Combine</button>
                 <select id="yearOptions">
-                    <option value="15">2015</option>
+                    <option value="15" selected="selected">2015</option>
                     <option value="16">2016</option>
                     <option value="17">2017</option>
-                    <option value="18" selected="selected">2018</option>
+                    <option value="18">2018</option>
                 </select>
             </div>
             
@@ -36,6 +36,9 @@
                     <span class="legend-bubble" id="legend2"></span>
                     <p>Not Seen</p>
                 </div>
+            </div>
+            <div id="head">
+                <p></p>
             </div>
             <svg id="canvas"></svg>
         </div>
