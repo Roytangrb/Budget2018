@@ -8,8 +8,10 @@
 - Linebreak in csv/excel: delete in advance before reading into by `d3.csv`
 
 ## TODO
-* Newly added bubble tooltip missing
-* Split into group by `Head`
+* ~~Newly added bubble tooltip missing~~
+* ~~Split into group by `Head`~~
+* Head Group Name (find data mapping)
 * Bubble Text Label
 * Isolate out exit data points (description of comparing years)
-* Legend for `exit` & `enter` datapoints
+* ~~Legend for `exit` & `enter` datapoints~~
+* 

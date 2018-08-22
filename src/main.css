@@ -35,6 +35,39 @@
     position: sticky;
     top: 0;
 }
+button {
+    z-index: 1;
+}
+#legend{
+    float: right;
+    position: sticky;
+    top:0;
+    right: 50px;
+}
+#legend-des, #legend-item{
+    display: block;
+}
+
+#legend-item p, #legend-item span{
+    display: inline-block;
+}
+.legend-bubble{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%
+}
+#legend-des{
+    color: rgba(200, 200, 200, 0.75);
+}
+#legend0{
+    background-color:rgba(200, 200, 200, 0.5)
+}
+#legend1{
+    background-color: rgba(30, 30, 255, 0.5)
+}
+#legend2{
+    background-color: rgb(0, 0, 0)
+}
 
 body{
     background: linear-gradient(to bottom right, rgba(102, 153, 255, 0.5), rgba(102, 102, 255, 0.5))

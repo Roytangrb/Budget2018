@@ -5,28 +5,8 @@ import * as d3 from "d3"
 import sort from './functions/sort';
 import split from './functions/splitByHead';
 import combine from './functions/combine';
+import addToolTips from './functions/addToolTips'
 
-const bubblesInteractionEffects = (bubbles)=>{
-    //add tooltip
-    const tooltip = d3.select(".tooltip")
-
-    bubbles
-        .on("mouseover",d=>{
-                tooltip.html(d["Programme Name"]);
-                tooltip.style("visibility", "visible");
-            }
-        )
-        .on("mousemove", ()=>{
-                tooltip
-                    .style("top", `${d3.event.pageY-10}px`)
-                    .style("left",`${d3.event.pageX+10}px`);
-            }
-        )
-        .on("mouseout", ()=>{
-            tooltip.style("visibility", "hidden")
-            }
-        )
-}
 const fireSimulation = (data, radiusScale,bubbles)=>{
     //create simulation
     const strength = 0.03;
@@ -108,7 +88,7 @@ const renderChart = (data)=>{
                     })
 
     //add interactions
-    bubblesInteractionEffects(bubbles)
+    addToolTips(bubbles)
     //fire simulation, pass to other functions,listen for trigger
     const simulation = fireSimulation(data, radiusScale, bubbles)
     const sortButton = document.querySelector('#sort')
@@ -171,11 +151,10 @@ const updateChart = async (year)=>{
         .attr("class", "artist")
         .attr("class", "newly-added")
 
-    //add interactions to new bubbles
-    let entered_bubbles = d3.select('#canvas').select('g').selectAll('.newly-added')
-    bubblesInteractionEffects(entered_bubbles)
     //refire simulation
     let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
+    //refresh tooltips
+    addToolTips(all_bubbles)
     const simulation = fireSimulation(new_data, radiusScale, all_bubbles)
     const sortButton = document.querySelector('#sort')
     sortButton.addEventListener('click', event=>{sort(simulation, radiusScale)})
