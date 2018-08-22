@@ -10,6 +10,7 @@
 ## TODO
 * ~~Newly added bubble tooltip missing~~
 * ~~Split into group by `Head`~~
+* Hover fill not working (svg fill prop mutate but presents black)
 * Head Group Name (find data mapping)
 * Bubble Text Label
 * Isolate out exit data points (description of comparing years)

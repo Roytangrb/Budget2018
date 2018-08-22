@@ -166,7 +166,7 @@ const updateChart = async (year)=>{
 
 //init only at large screen
 if (screen.width >=1023){
-    initBubbles(18)
+    initBubbles(15)
 }
 //listener for year change
 const select = document.querySelector('#yearOptions')

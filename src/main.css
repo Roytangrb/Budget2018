@@ -30,6 +30,12 @@
     display: none;
 }
 
+#head{
+    position:sticky;
+    top: 30px;
+    text-align: center
+}
+
 #toolbar {
     display: none;
     position: sticky;
