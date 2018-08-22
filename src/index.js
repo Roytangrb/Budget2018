@@ -5,7 +5,7 @@ import * as d3 from "d3"
 import sort from './functions/sort';
 import split from './functions/splitByHead';
 import combine from './functions/combine';
-import addToolTips from './functions/addToolTips'
+import addInteraction from './functions/addInteraction'
 
 const fireSimulation = (data, radiusScale,bubbles)=>{
     //create simulation
@@ -88,7 +88,7 @@ const renderChart = (data)=>{
                     })
 
     //add interactions
-    addToolTips(bubbles)
+    addInteraction(bubbles)
     //fire simulation, pass to other functions,listen for trigger
     const simulation = fireSimulation(data, radiusScale, bubbles)
     const sortButton = document.querySelector('#sort')
@@ -104,6 +104,7 @@ const renderChart = (data)=>{
 }
 
 const initBubbles = (year)=>{
+    window.year = year
     d3.csv(`data/20${year}/fin_provision/fin_provision_chi_20${year}.csv`, (d)=>{
         return {
             "Head": +d["總目"],
@@ -154,7 +155,7 @@ const updateChart = async (year)=>{
     //refire simulation
     let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
     //refresh tooltips
-    addToolTips(all_bubbles)
+    addInteraction(all_bubbles)
     const simulation = fireSimulation(new_data, radiusScale, all_bubbles)
     const sortButton = document.querySelector('#sort')
     sortButton.addEventListener('click', event=>{sort(simulation, radiusScale)})
@@ -172,6 +173,7 @@ if (screen.width >=1023){
 const select = document.querySelector('#yearOptions')
 const onChangeHandler = ()=>{
     let year = +select.options[select.selectedIndex].value
+    window.year = year
     updateChart(year)
 }
 select.addEventListener('change', onChangeHandler)
