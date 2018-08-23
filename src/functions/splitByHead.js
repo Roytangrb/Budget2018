@@ -1,15 +1,16 @@
 import * as d3 from 'd3'
 
 const split = (data, simulation)=>{
-    const heads = findUniqueHead(data) //82 groups, 10 col 9 rows
+    const window_width = document.querySelector('body').offsetWidth
+    const heads = findUniqueHead(data) //82 groups, 8 col 11 rows
     const forceX = d3.forceX(d=>{
         let index = heads.indexOf(d['Head'])
-        return index / 10  * 110 - 450
+        return index % 8  * 110 - window_width/2 + 100
     }).strength(0.06)
 
     const forceY = d3.forceY(d=>{
         let index = heads.indexOf(d['Head'])
-        return index % 10 * 100 - 350
+        return Math.floor(index / 10) * 100 - 350
     }).strength(0.06)
     simulation.force("y", forceY)
     simulation.force("x", forceX)
@@ -24,6 +25,7 @@ const findUniqueHead = (data)=>{
             heads.push(d['Head'])
         }
     })
+
     return heads
 }
 

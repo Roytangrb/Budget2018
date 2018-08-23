@@ -26,10 +26,6 @@
     font-weight: 600;
 }
 
-.chart-container, .chart-container h3{
-    display: none;
-}
-
 #head{
     position:sticky;
     top: 30px;
@@ -37,12 +33,11 @@
 }
 
 #toolbar {
-    display: none;
     position: sticky;
     top: 0;
 }
 button {
-    z-index: 1;
+    z-index: 10;
 }
 #legend{
     float: right;
@@ -79,11 +74,15 @@ body{
     background: linear-gradient(to bottom right, rgba(102, 153, 255, 0.5), rgba(102, 102, 255, 0.5))
 }
 
+/* block on small screen */
+.block-on-small-screen {
+    display: none;
+}
 @media only screen and (min-width: 1024px){
     .screen-size-reminder {
         display: none;
     }
-    .chart-container, .chart-container h3, #toolbar{
+    .block-on-small-screen {
         display: block;
     }
     body{

@@ -10,10 +10,11 @@
         <div class="screen-size-reminder">
             <p>Oops...Screen too small<br>Please view on a larger screen</p>
         </div>
-        <div class=".chart-container">
-            <h3>Estimated Financial Provision 2015-2018</h3>
-            <div id="toolbar">
+        <div class=".chart-container .block-on-small-screen">
+            <h3 class="block-on-small-screen">Estimated Financial Provision 2015-2018</h3>
+            <div class="block-on-small-screen" id="toolbar">
                 <button id="splitToGroup">Break Down</button>
+                <button id="top10">Top 10</button>
                 <button id="sort">Sort</button>
                 <button id="combine">Combine</button>
                 <select id="yearOptions">
@@ -28,24 +29,30 @@
                 </select>
             </div>
             
-            <div id="legend">
+            <div id="legend" class="block-on-small-screen">
                 <div id="legend-des">
                     <p>Changes Compared to previous selection</p>
                 </div>
                 <div id="legend-item">
-                    <span class="legend-bubble" id="legend0"></span>
-                    <p>Remained</p>
                     <span class="legend-bubble" id="legend1"></span>
                     <p>New</p>
                     <span class="legend-bubble" id="legend2"></span>
                     <p>Not Seen</p>
+                    <span class="legend-bubble" id="legend0"></span>
+                    <p>Remained</p>
                 </div>
             </div>
             <div id="head">
                 <p></p>
             </div>
-            <svg id="canvas"></svg>
+            <svg id="canvas" class="block-on-small-screen"></svg>
         </div>
         <div class="tooltip"></div>
+        <script>
+            //scroll into chart after two seconds
+            setTimeout(()=>{
+                document.querySelector('#canvas').scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+            },2000)
+        </script>
     </body>
 </html>

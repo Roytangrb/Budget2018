@@ -11,8 +11,12 @@
 * ~~Newly added bubble tooltip missing~~
 * ~~Split into group by `Head`~~
 * Hover fill not working (svg fill prop mutate but presents black)
-* Head Group Name (find data mapping)
-* Bubble Text Label
+* Top 10 to Top N
+* Top 10 Cannot restore to showing all
+* !!!! update group radius cannot change => outter radius as growth, inner radius as shrink
+* ~~Head Group Name (find data mapping)~~
+* label cluster in split state
+* ~~Bubble Text Label~~
 * Isolate out exit data points (description of comparing years)
 * ~~Legend for `exit` & `enter` datapoints~~
 * 

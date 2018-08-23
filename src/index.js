@@ -6,6 +6,7 @@ import sort from './functions/sort';
 import split from './functions/splitByHead';
 import combine from './functions/combine';
 import addInteraction from './functions/addInteraction'
+import top10 from './functions/top10bubbles'
 
 const fireSimulation = (data, radiusScale,bubbles)=>{
     //create simulation
@@ -18,7 +19,6 @@ const fireSimulation = (data, radiusScale,bubbles)=>{
 		.force("x", forceX)
 		.force("y", forceY)
         .force("collide", d3.forceCollide(d=>radiusScale(d["Budget"]) + 1))
-    
 
     //fire the simulation
     simulation.nodes(data).on("tick", () =>{
@@ -49,8 +49,28 @@ const switchDataSet = async (year)=>{
     return data
 }
 
+const launchFuncs = (bubbles, data, radiusScale, simulation)=>{
+    //add interactions
+    addInteraction(bubbles)
+    const sortButton = document.querySelector('#sort')
+    sortButton.addEventListener('click', (event)=>{sort(simulation, radiusScale)})
+
+    //listen for split 
+    const splitButton = document.querySelector('#splitToGroup')
+    splitButton.addEventListener('click', (event)=>{split(data, simulation, radiusScale)})
+
+    //listen for combine
+    const combineButton = document.querySelector('#combine')
+    combineButton.addEventListener('click', event=>{combine(simulation, radiusScale)})
+
+    //listen for top10 sort
+    const top10button = document.querySelector('#top10')
+    top10button.addEventListener('click', event=>{top10(data, radiusScale,simulation, bubbles)})
+}
+
 const renderChart = (data)=>{
-    const containerW = 1024, containerH = 1400
+    const containerW = document.querySelector('body').offsetWidth
+    const containerH = 1400
 
     const margin = {top: 0, bottom: 30, left: 30, right: 20}
 	const width = containerW - margin.left - margin.right, height = containerH - margin.top - margin.bottom
@@ -86,21 +106,9 @@ const renderChart = (data)=>{
                         }
                         return "rgba(200, 200, 200, 0.5)"
                     })
-
-    //add interactions
-    addInteraction(bubbles)
-    //fire simulation, pass to other functions,listen for trigger
+    //fire simulation, pass to other functions
     const simulation = fireSimulation(data, radiusScale, bubbles)
-    const sortButton = document.querySelector('#sort')
-    sortButton.addEventListener('click', (event)=>{sort(simulation, radiusScale)})
-
-    //listen for split 
-    const splitButton = document.querySelector('#splitToGroup')
-    splitButton.addEventListener('click', (event)=>{split(data, simulation, radiusScale)})
-
-    //listen for combine
-    const combineButton = document.querySelector('#combine')
-    combineButton.addEventListener('click', event=>{combine(simulation, radiusScale)})
+    launchFuncs(bubbles, data, radiusScale, simulation)
 }
 
 const initBubbles = (year)=>{
@@ -130,14 +138,22 @@ const updateChart = async (year)=>{
     const radiusScale = d3.scaleSqrt().domain(budgetMinMax).range([5, 80]);
 
     //update bubbles, bubbles re-bind to new_data
-    let bubbles = d3.select('#canvas').select('g').selectAll('circle').data(new_data, d=>d.id)
+    let bubbles = d3.select('#canvas').select('g').selectAll('circle')
+                    .data(new_data, d=>d.id)
+                    // .transition()
+                    // .duration(2000)
+                    // .attr("r", function(d){
+                    //     return radiusScale(d["Budget"]);
+                    // })
 
     //TODO: exit grounp should be moved into cluster and show
-    bubbles.exit().transition()
-            .duration(2000)
-            .attr('fill', 'black')
-            .attr("r", 0)
-            .remove();
+    bubbles
+        .exit()
+        .transition()
+        .duration(2000)
+        .attr('fill', 'black')
+        .attr("r", 0)
+        .remove();
 
     bubbles
         .enter()
@@ -152,17 +168,12 @@ const updateChart = async (year)=>{
         .attr("class", "artist")
         .attr("class", "newly-added")
 
-    //refire simulation
     let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
-    //refresh tooltips
-    addInteraction(all_bubbles)
+   
     const simulation = fireSimulation(new_data, radiusScale, all_bubbles)
-    const sortButton = document.querySelector('#sort')
-    sortButton.addEventListener('click', event=>{sort(simulation, radiusScale)})
-    const splitButton = document.querySelector('#splitToGroup')
-    splitButton.addEventListener('click', event=>{split(new_data, simulation)})
-    const combineButton = document.querySelector('#combine')
-    combineButton.addEventListener('click', event=>{combine(simulation, radiusScale)})
+    //relaunch funcs
+    launchFuncs(all_bubbles, new_data, radiusScale, simulation)
+    
 }
 
 //init only at large screen
