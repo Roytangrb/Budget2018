@@ -175,6 +175,9 @@ const onChangeHandler = ()=>{
     let year = +select.options[select.selectedIndex].value
     window.year = year
     updateChart(year)
+    //restore language to chi
+    document.querySelector('#languageSwitch').value = 'chi'
+    d3.select('#head p').html('')
 }
 select.addEventListener('change', onChangeHandler)
 
