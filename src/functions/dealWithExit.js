@@ -1,5 +1,12 @@
 import * as d3 from 'd3'
+import addInteraction from './addInteraction'
 const isolateExit = (bubbles, radiusScale)=>{
+    d3.select('#canvas').select('.exit_group').selectAll('circle')
+        .transition()
+        .duration(1000)
+        .attr('r', 0)
+        .remove()
+
     let exit_data =[] 
     bubbles
         .exit()
@@ -22,7 +29,8 @@ const isolateExit = (bubbles, radiusScale)=>{
         //sort data
         exit_data = exit_data.sort((a, b)=>b.r-a.r)
         let gap = 50
-        d3.select('#canvas').append('g').selectAll('.exit_bubbles')
+        const group = d3.select('#canvas').select('.exit_group')
+        const exit_bubbles = group.selectAll('circle')
             .data(exit_data, d=>d.id)
             .enter()
             .append('circle')
@@ -32,14 +40,17 @@ const isolateExit = (bubbles, radiusScale)=>{
                 gap += 2 * d.r
                 return temp
             })
-            .attr("class", "exit_bubbles")
             .attr("fill", "rgb(0, 0, 0)")
             .style('opacity', 0.5)
             .attr('r', 0)
+        
+        exit_bubbles
             .transition()
             .duration(2000)
             .attr("r", function(d){
                 return d.r
-        })
+            })
+
+        addInteraction(exit_bubbles)
 }
 export default isolateExit

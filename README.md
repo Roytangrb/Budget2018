@@ -19,6 +19,6 @@
 * ~~Head Group Name (find data mapping)~~
 * ~~label cluster in split state~~
 * ~~Bubble Text Label~~
-* Isolate out exit data points (description of comparing years)
+* ~~Isolate out exit data points (description of comparing years)~~
 * ~~Legend for `exit` & `enter` datapoints~~
 * 

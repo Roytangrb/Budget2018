@@ -85,9 +85,11 @@ const renderChart = (data)=>{
                     .attr("height", height)
                     .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
-	const group = canvas.append("g")
+    const group = canvas.append("g")
+                .attr('class', 'update_group')
 				.attr("transform", `translate(${width/2}, ${centerTranslateY})`);
-
+    //create a group dom for exit bubbles
+    d3.select('#canvas').append('g').attr('class', 'exit_group')
     //find budget extent: [min, max]
     const budgetMinMax = d3.extent(data.map(item => item['Budget']))
     //create buddle area raduis scale
@@ -156,11 +158,11 @@ const updateChart = async (year)=>{
             return radiusScale(d["Budget"]);
         })
 
-    d3.select('#canvas').select('g').selectAll('.newly-added')
+    d3.select('#canvas').select('.update_group').selectAll('.newly-added')
         .attr('fill', 'rgb(30, 30, 255)')
         .style('opacity', 0.5)
 
-    bubbles = d3.select('#canvas').select('g').selectAll('circle')
+    bubbles = d3.select('#canvas').select('.update_group').selectAll('circle')
    
     const simulation = fireSimulation(new_data, radiusScale, bubbles)
     //relaunch funcs

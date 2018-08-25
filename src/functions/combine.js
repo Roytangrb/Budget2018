@@ -1,5 +1,7 @@
 import * as d3 from 'd3'
 const combine = (simulation, radiusScale)=>{
+    //show exit_group
+    d3.select('.exit_group').selectAll('circle').attr('visibility', 'visible')
     const forceX = d3.forceX(0).strength(0)
     const forceY = d3.forceY(0).strength(0)
     const forceR = d3.forceRadial(d=>{

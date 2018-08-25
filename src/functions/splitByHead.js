@@ -1,6 +1,8 @@
 import * as d3 from 'd3'
 
 const split = (data, simulation)=>{
+    //hide exit_group
+    d3.select('.exit_group').selectAll('circle').attr('visibility', 'hidden')
     const window_width = document.querySelector('body').offsetWidth
     const heads = findUniqueHead(data) //82 groups, 8 col 11 rows
     const forceX = d3.forceX(d=>{

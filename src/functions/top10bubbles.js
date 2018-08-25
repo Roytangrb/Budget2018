@@ -1,5 +1,8 @@
+import * as d3 from 'd3'
 //sort out top 10 bubbles
 const sort = (data, radiusScale, simulation, bubbles)=>{
+    //hide exit_group
+    d3.select('.exit_group').selectAll('circle').attr('visibility', 'hidden')
     const top10 = data.map(d=>d['Budget']).sort((a, b)=>b-a).slice(0, 10)
     bubbles
         .filter(d=>d['Budget'] <top10[9])
