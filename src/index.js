@@ -139,12 +139,9 @@ const updateChart = async (year)=>{
 
     //update bubbles, bubbles re-bind to new_data
     let bubbles = d3.select('#canvas').select('g').selectAll('circle')
-                    .data(new_data, d=>d.id)
-                    // .transition()
-                    // .duration(2000)
-                    // .attr("r", function(d){
-                    //     return radiusScale(d["Budget"]);
-                    // })
+                    .data(new_data, function(d){
+                        return d.id
+                    })
 
     //TODO: exit grounp should be moved into cluster and show
     bubbles
@@ -159,20 +156,23 @@ const updateChart = async (year)=>{
         .enter()
         .append("circle")
         .attr("r", 0)
+        .attr("class", "artist")
+        .attr('class', 'newly-added')
+      .merge(bubbles)
         .transition()
         .duration(2000)
         .attr("r", function(d){
             return radiusScale(d["Budget"]);
         })
-        .attr('fill', 'rgba(30, 30, 255, 0.5)')
-        .attr("class", "artist")
-        .attr("class", "newly-added")
 
-    let all_bubbles = d3.select('#canvas').select('g').selectAll('circle')
+    d3.select('#canvas').select('g').selectAll('.newly-added')
+        .attr('fill', 'rgba(30, 30, 255, 0.5)')
+
+    bubbles = d3.select('#canvas').select('g').selectAll('circle')
    
-    const simulation = fireSimulation(new_data, radiusScale, all_bubbles)
+    const simulation = fireSimulation(new_data, radiusScale, bubbles)
     //relaunch funcs
-    launchFuncs(all_bubbles, new_data, radiusScale, simulation)
+    launchFuncs(bubbles, new_data, radiusScale, simulation)
     
 }
 
