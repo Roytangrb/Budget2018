@@ -35,7 +35,7 @@ const addInteraction = (bubbles)=>{
                 tooltip.html(html)
                 tooltip.style("visibility", "visible");
                 //hover fill
-                //d3.select(this).transition().duration(300).attr('fill', 'rbga(50, 50, 200, 0.7)')
+                d3.select(this).transition().duration(300).style('opacity', 1)
             }
         )
         .on("mousemove", ()=>{
@@ -47,7 +47,7 @@ const addInteraction = (bubbles)=>{
         .on("mouseout", function(d){
                 tooltip.style("visibility", "hidden")
                 //cancel hover fill
-                //d3.select(this).transition().duration(300).attr('fill', 'rbga(200, 200, 200, 0.5)')
+                d3.select(this).transition().duration(300).style('opacity', 0.5)
             }
         )
         //add click show full details

@@ -104,8 +104,9 @@ const renderChart = (data)=>{
                         if (d["Budget"] === 0){
                             return "black"; // if provision data is 0, the bubble is filled with black color
                         }
-                        return "rgba(200, 200, 200, 0.5)"
+                        return "rgb(200, 200, 200)"
                     })
+                    .style('opacity', 0.5)
     //fire simulation, pass to other functions
     const simulation = fireSimulation(data, radiusScale, bubbles)
     launchFuncs(bubbles, data, radiusScale, simulation)
@@ -166,7 +167,8 @@ const updateChart = async (year)=>{
         })
 
     d3.select('#canvas').select('g').selectAll('.newly-added')
-        .attr('fill', 'rgba(30, 30, 255, 0.5)')
+        .attr('fill', 'rgb(30, 30, 255)')
+        .style('opacity', 0.5)
 
     bubbles = d3.select('#canvas').select('g').selectAll('circle')
    
