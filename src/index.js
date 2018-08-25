@@ -7,6 +7,7 @@ import split from './functions/splitByHead';
 import combine from './functions/combine';
 import addInteraction from './functions/addInteraction'
 import top10 from './functions/top10bubbles'
+import isolateExit from './functions/dealWithExit';
 
 const fireSimulation = (data, radiusScale,bubbles)=>{
     //create simulation
@@ -100,12 +101,7 @@ const renderChart = (data)=>{
                     .attr("r", function(d){
                         return radiusScale(d["Budget"]);
                     })
-                    .attr("fill", function(d){
-                        if (d["Budget"] === 0){
-                            return "black"; // if provision data is 0, the bubble is filled with black color
-                        }
-                        return "rgb(200, 200, 200)"
-                    })
+                    .attr("fill", "rgb(200, 200, 200)")
                     .style('opacity', 0.5)
     //fire simulation, pass to other functions
     const simulation = fireSimulation(data, radiusScale, bubbles)
@@ -145,13 +141,7 @@ const updateChart = async (year)=>{
                     })
 
     //TODO: exit grounp should be moved into cluster and show
-    bubbles
-        .exit()
-        .transition()
-        .duration(2000)
-        .attr('fill', 'black')
-        .attr("r", 0)
-        .remove();
+    isolateExit(bubbles, radiusScale)
 
     bubbles
         .enter()
