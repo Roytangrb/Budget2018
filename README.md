@@ -1,5 +1,5 @@
 # Budget2018
-> [Project Link](https://roytangrb.github.io/Budget2018/)
+> [Project Link](https://roytangrb.github.io/budget/)
 
 ## Dev Commmand
 * `npm run dev` : Using Webpack Dev Server, on `port:7700`
@@ -13,6 +13,7 @@
 * ~~Split into group by `Head`~~
 * ~~Hover fill not working (hover change opacity)~~
 * Top 10 to Top N
+* Update Legend
 * ~~Top 10 Cannot restore to showing all~~
 * ~~update group radius cannot change~~
 * outter radius as growth, inner radius as shrink
