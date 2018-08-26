@@ -91,9 +91,9 @@ const renderChart = (data)=>{
     //create a group dom for exit bubbles
     d3.select('#canvas').append('g').attr('class', 'exit_group')
     //find budget extent: [min, max]
-    const budgetMinMax = d3.extent(data.map(item => item['Budget']))
+    //const budgetMinMax = d3.extent(data.map(item => item['Budget']))
     //create buddle area raduis scale
-    const radiusScale = d3.scaleSqrt().domain(budgetMinMax).range([5, 80]);
+    const radiusScale = d3.scaleSqrt().domain([0, 62395.5]).range([5, 80]);//use static standard scale
 
     //drawing bubbles
     const bubbles = group.selectAll(".artist")
@@ -132,14 +132,21 @@ const updateChart = async (year)=>{
     let new_data = await switchDataSet(year)
     // TODO: radius scale redefine
     //find budget extent: [min, max]
-    const budgetMinMax = d3.extent(new_data.map(item => item['Budget']))
+    //const budgetMinMax = d3.extent(new_data.map(item => item['Budget']))
     //create buddle area raduis scale
-    const radiusScale = d3.scaleSqrt().domain(budgetMinMax).range([5, 80]);
-
+    const radiusScale = d3.scaleSqrt().domain([0, 62395.5]).range([5, 80]);//use static standard scale
+    const changeFillScale = d3.scaleLinear().domain([0, 100]).range([0.5, 1])
     //update bubbles, bubbles re-bind to new_data
     let bubbles = d3.select('#canvas').select('g').selectAll('circle')
                     .data(new_data, function(d){
                         return d.id
+                    })
+                    .attr('fill', function(d){
+                        let grow = radiusScale(d["Budget"]) / d3.select(this).attr('r') * 100 - 100;// in percentage
+                        console.log(grow)
+                        if (grow == 0) return 'rgb(200, 200, 200)'
+                        // grow is multiplied
+                        return grow > 0 ? `rgba(0, 255, 0, ${changeFillScale(grow)})`: `rgba(255, 0, 0, ${changeFillScale(-grow)}`
                     })
 
     //TODO: exit grounp should be moved into cluster and show

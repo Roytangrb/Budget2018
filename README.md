@@ -13,7 +13,7 @@
 * ~~Split into group by `Head`~~
 * ~~Hover fill not working (hover change opacity)~~
 * Top 10 to Top N
-* Top 10 Cannot restore to showing all
+* ~~Top 10 Cannot restore to showing all~~
 * ~~update group radius cannot change~~
 * outter radius as growth, inner radius as shrink
 * ~~Head Group Name (find data mapping)~~
